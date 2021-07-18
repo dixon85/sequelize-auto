@@ -1,7 +1,7 @@
-import _ from "lodash";
-import { Utils } from "sequelize";
-import { ColumnDescription, Dialect } from "sequelize/types";
-import { FKSpec } from "./dialects/dialect-options";
+import _ from 'lodash';
+import { Utils } from 'sequelize';
+import { ColumnDescription, Dialect } from 'sequelize/types';
+import { FKSpec } from './dialects/dialect-options';
 
 export interface Table {
   name?: string;
@@ -41,7 +41,6 @@ export interface IndexSpec {
   tableName: string;
   /** mysql only - 'BTREE' */
   type: string;
-
 }
 
 /** Relationship between two models, based on foreign keys */
@@ -72,17 +71,17 @@ export interface Relation {
 
 export class TableData {
   /** Fields for each table; indexed by schemaName.tableName */
-  tables: { [tableName: string]: { [fieldName: string]: ColumnDescription; }; };
+  tables: { [tableName: string]: { [fieldName: string]: ColumnDescription } };
   /** Foreign keys for each table; indexed by schemaName.tableName */
-  foreignKeys: { [tableName: string]: { [fieldName: string]: FKSpec; }; };
+  foreignKeys: { [tableName: string]: { [fieldName: string]: FKSpec } };
   /** Flag `true` for each table that has any trigger.  This affects how Sequelize performs updates. */
-  hasTriggerTables: { [tableName: string]: boolean; };
+  hasTriggerTables: { [tableName: string]: boolean };
   /** Indexes for each table; indexed by schemaName.tableName */
-  indexes: { [tableName: string]: IndexSpec[]; };
+  indexes: { [tableName: string]: IndexSpec[] };
   /** Relations between models, computed from foreign keys */
   relations: Relation[];
   /** Text to be written to the model files, indexed by schemaName.tableName */
-  text?: { [name: string]: string; };
+  text?: { [name: string]: string };
   constructor() {
     this.tables = {};
     this.foreignKeys = {};
@@ -94,8 +93,8 @@ export class TableData {
 
 /** Split schema.table into [schema, table] */
 export function qNameSplit(qname: string) {
-  if (qname.indexOf(".") > 0) {
-    const [schemaName, tableNameOrig] = qname.split(".");
+  if (qname.indexOf('.') > 0) {
+    const [schemaName, tableNameOrig] = qname.split('.');
     return [schemaName, tableNameOrig];
   }
   return [null, qname];
@@ -103,18 +102,18 @@ export function qNameSplit(qname: string) {
 
 /** Get combined schema.table name */
 export function qNameJoin(schema: string | undefined, table: string | undefined) {
-  return !!schema ? schema + "." + table : table as string;
+  return !!schema ? schema + '.' + table : (table as string);
 }
 
 /** Language of output model files */
-export declare type LangOption = "es5" | "es6" | "esm" | "ts";
+export declare type LangOption = 'es5' | 'es6' | 'esm' | 'ts' | 'custom';
 
 /** "c" camelCase |
  * "l" lower_case |
  * "o" original (db) |
  * "p" PascalCase |
  * "u" UPPER_CASE */
-export declare type CaseOption = "c" | "l" | "o" | "p" | "u";
+export declare type CaseOption = 'c' | 'l' | 'o' | 'p' | 'u';
 
 export interface AutoOptions {
   additional?: any;
@@ -131,7 +130,7 @@ export interface AutoOptions {
   /** Database dialect */
   dialect?: Dialect;
   /** Dialect-specific options */
-  dialectOptions?: { options?: any; };
+  dialectOptions?: { options?: any };
   /** Where to write the model files */
   directory: string;
   /** Database host */
@@ -168,7 +167,7 @@ export interface AutoOptions {
   views?: boolean;
 }
 
-export type TSField = { special: string[]; elementType: string; } & ColumnDescription;
+export type TSField = { special: string[]; elementType: string } & ColumnDescription;
 
 /** Uses Inflector via Sequelize, but appends 's' if plural would be the same as singular.
  * Use `Utils.useInflection({ singularize: fn, pluralize: fn2 })` to configure. */
@@ -207,4 +206,3 @@ export function recase(opt: CaseOption | undefined, val: string | null, singular
   }
   return val;
 }
-
