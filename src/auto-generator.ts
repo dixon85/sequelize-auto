@@ -81,7 +81,7 @@ export class AutoGenerator {
       header += sp + 'static init(sequelize, DataTypes) {\n';
       header += sp + 'super.init({\n';
     } else if (this.options.lang === 'custom') {
-      header += "import { Model } from 'sequelize';\n";
+      header += "import { Model } from 'sequelize';\n\n";
       header += 'export default class #TABLE# extends Model {\n';
       header += sp + 'static init(sequelize, DataTypes) {\n';
       header += sp + sp + 'super.init(\n';
@@ -170,7 +170,7 @@ export class AutoGenerator {
     });
 
     // trim off last ",\n"
-    str = str.substring(0, str.length - 2) + '\n';
+    //str = str.substring(0, str.length - 2) + '\n';
 
     // add the table options
     str += space[3] + '},\n';
@@ -219,7 +219,7 @@ export class AutoGenerator {
     str += this.addIndexes(table);
 
     str = space[4] + str.trim();
-    str = str.substring(0, str.length - 1);
+    // str = str.substring(0, str.length - 1);
     str += '\n' + space[3] + '}\n';
 
     str += space[2] + ');\n';
