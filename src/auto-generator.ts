@@ -222,7 +222,7 @@ export class AutoGenerator {
     str = str.substring(0, str.length - 1);
     str += '\n' + space[3] + '}\n';
 
-    str += space[3] + ');\n';
+    str += space[2] + ');\n';
     const lang = this.options.lang;
     if (lang === 'es6' || lang === 'esm' || lang === 'ts' || lang === 'custom') {
       str += space[2] + 'return ' + tableName + ';\n';
@@ -294,7 +294,7 @@ export class AutoGenerator {
         if (foreignKey && foreignKey.isForeignKey) {
           str += space[5] + 'references: {\n';
           str += space[3] + space[3] + "model: '" + fieldObj[attr].foreignSources.target_table + "',\n";
-          str += space[3] + space[3] + "key: '" + fieldObj[attr].foreignSources.target_column + "'\n";
+          str += space[3] + space[3] + "key: '" + fieldObj[attr].foreignSources.target_column + "',\n";
           str += space[5] + '}';
         } else {
           return true;
@@ -439,31 +439,31 @@ export class AutoGenerator {
       indexes.forEach((idx) => {
         str += space[5] + '{\n';
         if (idx.name) {
-          str += space[3] + space[3] + `name: "${idx.name}",\n`;
+          str += space[3] + space[3] + `name: '${idx.name}',\n`;
         }
         if (idx.unique) {
           str += space[3] + space[3] + 'unique: true,\n';
         }
         if (idx.type) {
           if (['UNIQUE', 'FULLTEXT', 'SPATIAL'].includes(idx.type)) {
-            str += space[3] + space[3] + `type: "${idx.type}",\n`;
+            str += space[3] + space[3] + `type: '${idx.type}',\n`;
           } else {
-            str += space[3] + space[3] + `using: "${idx.type}",\n`;
+            str += space[3] + space[3] + `using: '${idx.type}',\n`;
           }
         }
         str += space[3] + space[3] + `fields: [`;
         idx.fields.forEach((ff) => {
-          str += `{ name: "${ff.attribute}"`;
+          str += `{ name: '${ff.attribute}'`;
           if (ff.collate) {
-            str += `, collate: "${ff.collate}"`;
+            str += `, collate: '${ff.collate}'`;
           }
           if (ff.length) {
             str += `, length: ${ff.length}`;
           }
           if (ff.order && ff.order !== 'ASC') {
-            str += `, order: "${ff.order}"`;
+            str += `, order: '${ff.order}'`;
           }
-          str += ' },';
+          str += ' }';
         });
         str += '],\n';
         str += space[5] + '},\n';
