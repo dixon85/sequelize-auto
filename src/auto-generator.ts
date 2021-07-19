@@ -84,7 +84,8 @@ export class AutoGenerator {
       header += "import { Model } from 'sequelize';\n";
       header += 'export default class #TABLE# extends Model {\n';
       header += sp + 'static init(sequelize, DataTypes) {\n';
-      header += sp[2] + 'super.init({\n';
+      header += sp + sp + 'super.init(\n';
+      header += sp + sp + sp + '{\n';
     } else {
       header += "const Sequelize = require('sequelize');\n";
       header += 'module.exports = function(sequelize, DataTypes) {\n';
@@ -222,7 +223,7 @@ export class AutoGenerator {
     const lang = this.options.lang;
     if (lang === 'es6' || lang === 'esm' || lang === 'ts' || lang === 'custom') {
       str += space[2] + 'return ' + tableName + ';\n';
-      str += space[2] + '}\n}\n';
+      str += space[1] + '}\n}\n';
     } else {
       str += '};\n';
     }
