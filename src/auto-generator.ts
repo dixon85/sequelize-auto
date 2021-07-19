@@ -425,7 +425,7 @@ export class AutoGenerator {
     }
 
     // removes the last `,` within the attribute options
-    str = str.trim().replace(/,+$/, '') + '\n';
+    // str = str.trim().replace(/,+$/, '') + '\n';
     str = space[4] + str + space[4] + '},\n';
     return str;
   }
@@ -451,9 +451,9 @@ export class AutoGenerator {
             str += space[3] + space[3] + `using: "${idx.type}",\n`;
           }
         }
-        str += space[3] + space[3] + `fields: [\n`;
+        str += space[3] + space[3] + `fields: [`;
         idx.fields.forEach((ff) => {
-          str += space[3] + space[3] + `{ name: "${ff.attribute}"`;
+          str += `{ name: "${ff.attribute}"`;
           if (ff.collate) {
             str += `, collate: "${ff.collate}"`;
           }
@@ -463,9 +463,9 @@ export class AutoGenerator {
           if (ff.order && ff.order !== 'ASC') {
             str += `, order: "${ff.order}"`;
           }
-          str += ' },\n';
+          str += ' },';
         });
-        str += space[3] + space[3] + ']\n';
+        str += '],\n';
         str += space[5] + '},\n';
       });
       str += space[4] + '],\n';
