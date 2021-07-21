@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { Utils } from 'sequelize';
 import { ColumnDescription } from 'sequelize/types';
 import { DialectOptions, FKSpec } from './dialects/dialect-options';
 import {
@@ -30,6 +31,7 @@ export class AutoGenerator {
     indentation?: number;
     spaces?: boolean;
     lang?: LangOption;
+    noAlias?: boolean;
     caseModel?: CaseOption;
     caseProp?: CaseOption;
     caseFile?: CaseOption;
@@ -151,6 +153,42 @@ export class AutoGenerator {
     return text;
   }
 
+  /** Create the belongsToMany/belongsTo/hasMany/hasOne association strings */
+  private addAssociations(typeScript: boolean, model: string) {
+    let strBelongs = '';
+    let strBelongsToMany = '';
+    let str = 'static associate(models) {';
+    let strEnd = '}';
+
+    const rels = this.relations;
+    rels.forEach((rel) => {
+      if (rel.isM2M && rel.parentModel === model) {
+        const asprop = pluralize(rel.childProp);
+        strBelongsToMany += `  this.belongsToMany(${rel.childModel}, { as: '${asprop}', through: ${rel.joinModel}, foreignKey: "${rel.parentId}", otherKey: "${rel.childId}" });\n`;
+      } else {
+        if (rel.childModel === model) {
+          const bAlias =
+            this.options.noAlias && rel.parentModel.toLowerCase() === rel.parentProp.toLowerCase()
+              ? ''
+              : `as: "${rel.parentProp}", `;
+          strBelongs += `  this.belongsTo(${rel.parentModel}, { ${bAlias}foreignKey: "${rel.parentId}"});\n`;
+        }
+
+        if (rel.parentModel === model) {
+          const hasRel = rel.isOne ? 'hasOne' : 'hasMany';
+          const hAlias =
+            this.options.noAlias && Utils.pluralize(rel.childModel.toLowerCase()) === rel.childProp.toLowerCase()
+              ? ''
+              : `as: "${rel.childProp}", `;
+          strBelongs += `   this.${hasRel}(${rel.childModel}, { ${hAlias}foreignKey: "${rel.parentId}"});\n`;
+        }
+      }
+    });
+
+    // belongsToMany must come first
+    return str + strBelongsToMany + strBelongs + strEnd;
+  }
+
   // Create a string for the model of the table
   private addTable(table: string) {
     const [schemaName, tableNameOrig] = qNameSplit(table);
@@ -226,7 +264,9 @@ export class AutoGenerator {
     const lang = this.options.lang;
     if (lang === 'es6' || lang === 'esm' || lang === 'ts' || lang === 'custom') {
       str += space[2] + 'return ' + tableName + ';\n';
-      str += space[1] + '}\n}\n';
+      str += space[1] + '}\n';
+      str += space[1] + this.addAssociations(false, table);
+      str += '}\n';
     } else {
       str += '};\n';
     }
