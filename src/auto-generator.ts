@@ -160,6 +160,7 @@ export class AutoGenerator {
     let str = 'static associate(models) {';
     let strEnd = '}';
 
+    console.log('Model:' + model);
     const rels = this.relations;
     rels.forEach((rel) => {
       if (rel.isM2M && rel.parentModel === model) {
