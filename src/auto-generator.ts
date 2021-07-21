@@ -172,7 +172,7 @@ export class AutoGenerator {
             this.options.noAlias && rel.parentModel.toLowerCase() === rel.parentProp.toLowerCase()
               ? ''
               : `as: '${rel.parentProp}', `;
-          strBelongs += `    this.belongsTo(${rel.parentModel}, { ${bAlias}foreignKey: '${rel.parentId}'});\n`;
+          strBelongs += `    this.belongsTo(${rel.parentModel}, { ${bAlias}foreignKey: '${rel.parentId}' });\n`;
         }
 
         if (rel.parentModel === model) {
@@ -181,7 +181,7 @@ export class AutoGenerator {
             this.options.noAlias && Utils.pluralize(rel.childModel.toLowerCase()) === rel.childProp.toLowerCase()
               ? ''
               : `as: '${rel.childProp}', `;
-          strBelongs += `    this.${hasRel}(${rel.childModel}, { ${hAlias}foreignKey: '${rel.parentId}'});\n`;
+          strBelongs += `    this.${hasRel}(${rel.childModel}, { ${hAlias}foreignKey: '${rel.parentId}' });\n`;
         }
       }
     });
