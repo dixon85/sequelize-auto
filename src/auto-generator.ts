@@ -165,14 +165,14 @@ export class AutoGenerator {
     rels.forEach((rel) => {
       if (rel.isM2M && rel.parentModel === model) {
         const asprop = pluralize(rel.childProp);
-        strBelongsToMany += `    this.belongsToMany(${rel.childModel}, { as: '${asprop}', through: ${rel.joinModel}, foreignKey: "${rel.parentId}", otherKey: "${rel.childId}" });\n`;
+        strBelongsToMany += `    this.belongsToMany(${rel.childModel}, { as: '${asprop}', through: ${rel.joinModel}, foreignKey: '${rel.parentId}', otherKey: '${rel.childId}' });\n`;
       } else {
         if (rel.childModel === model) {
           const bAlias =
             this.options.noAlias && rel.parentModel.toLowerCase() === rel.parentProp.toLowerCase()
               ? ''
-              : `as: "${rel.parentProp}", `;
-          strBelongs += `    this.belongsTo(${rel.parentModel}, { ${bAlias}foreignKey: "${rel.parentId}"});\n`;
+              : `as: '${rel.parentProp}', `;
+          strBelongs += `    this.belongsTo(${rel.parentModel}, { ${bAlias}foreignKey: '${rel.parentId}'});\n`;
         }
 
         if (rel.parentModel === model) {
@@ -180,8 +180,8 @@ export class AutoGenerator {
           const hAlias =
             this.options.noAlias && Utils.pluralize(rel.childModel.toLowerCase()) === rel.childProp.toLowerCase()
               ? ''
-              : `as: "${rel.childProp}", `;
-          strBelongs += `    this.${hasRel}(${rel.childModel}, { ${hAlias}foreignKey: "${rel.parentId}"});\n`;
+              : `as: '${rel.childProp}', `;
+          strBelongs += `    this.${hasRel}(${rel.childModel}, { ${hAlias}foreignKey: '${rel.parentId}'});\n`;
         }
       }
     });
@@ -267,7 +267,7 @@ export class AutoGenerator {
       str += space[2] + 'return ' + tableName + ';\n';
       str += space[1] + '}\n\n';
       str += space[1] + this.addAssociations(false, tableName) + '\n';
-      str += '}\n';
+      str += space[1] + '}\n';
     } else {
       str += '};\n';
     }
