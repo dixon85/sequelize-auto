@@ -158,7 +158,7 @@ export class AutoGenerator {
     let strBelongs = '';
     let strBelongsToMany = '';
     let str = '  static associate(models) {\n';
-    let strEnd = '  }';
+    let strEnd = '  }\n';
 
     console.log('Model:' + model);
     const rels = this.relations;
