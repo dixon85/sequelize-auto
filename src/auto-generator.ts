@@ -157,8 +157,8 @@ export class AutoGenerator {
   private addAssociations(typeScript: boolean, model: string) {
     let strBelongs = '';
     let strBelongsToMany = '';
-    let str = this.space + 'static associate(models) {\n';
-    let strEnd = this.space + '}';
+    let str = '  static associate(models) {\n';
+    let strEnd = '  }';
 
     console.log('Model:' + model);
     const rels = this.relations;
