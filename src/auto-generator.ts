@@ -266,7 +266,7 @@ export class AutoGenerator {
     if (lang === 'es6' || lang === 'esm' || lang === 'ts' || lang === 'custom') {
       str += space[2] + 'return ' + tableName + ';\n';
       str += space[1] + '}\n';
-      str += space[1] + this.addAssociations(false, table);
+      str += space[1] + this.addAssociations(false, tableName);
       str += '}\n';
     } else {
       str += '};\n';
