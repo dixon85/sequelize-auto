@@ -168,9 +168,10 @@ export class AutoGenerator {
         strBelongsToMany += `    this.belongsToMany(models.${recase(
           this.options.caseProp,
           rel.childModel
-        )}, { as: '${asprop}', through: '${recase(this.options.caseProp, rel.joinModel)}', foreignKey: '${
-          rel.parentId
-        }', otherKey: '${rel.childId}' });\n`;
+        )}, { \n      as: '${asprop}',\n      through: '${recase(
+          this.options.caseProp,
+          rel.joinModel
+        )}',\n      foreignKey: '${rel.parentId}',\n      otherKey: '${rel.childId}'\n    });\n`;
       } else {
         if (rel.childModel === model) {
           const bAlias =
@@ -515,8 +516,9 @@ export class AutoGenerator {
           if (ff.order && ff.order !== 'ASC') {
             str += `, order: '${ff.order}'`;
           }
-          str += ' }';
+          str += ' },';
         });
+        str = str.slice(0, str.length - 1);
         str += '],\n';
         str += space[5] + '},\n';
       });
