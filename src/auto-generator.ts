@@ -173,7 +173,17 @@ export class AutoGenerator {
           rel.joinModel
         )}',\n      foreignKey: '${rel.parentId}',\n      otherKey: '${rel.childId}',\n    });\n`;
       } else {
-        if (rel.childModel === model) {
+        // check if M2M exists
+        let existsM2M: boolean = false;
+
+        rels.find((relation) => {
+          if (relation.isM2M && relation.childModel === rel.childModel) {
+            console.log(`Duplicate relation '${relation.childModel}' and '${rel.childModel}'`);
+            existsM2M = true;
+          }
+        });
+
+        if (rel.childModel === model && existsM2M === false) {
           const bAlias =
             this.options.noAlias && rel.parentModel.toLowerCase() === rel.parentProp.toLowerCase()
               ? ''

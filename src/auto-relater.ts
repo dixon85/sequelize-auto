@@ -35,7 +35,6 @@ export class AutoRelater {
     });
 
     td.relations = _.sortBy(this.relations, ['parentTable', 'childTable']);
-    console.log(td.relations);
     return td;
   }
 
