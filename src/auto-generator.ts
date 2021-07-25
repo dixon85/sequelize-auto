@@ -198,7 +198,16 @@ export class AutoGenerator {
           )}, { ${bAlias}foreignKey: '${rel.parentId}' });\n`;
         }
 
-        if (rel.parentModel === model) {
+        existsM2M = false;
+
+        rels.find((relation) => {
+          if (relation.isM2M === true && relation.joinModel === rel.childModel) {
+            console.log(`A Duplicate join relation between '${relation.joinModel}' and '${rel.childModel}' found`);
+            existsM2M = true;
+          }
+        });
+
+        if (rel.parentModel === model && existsM2M === false) {
           const hasRel = rel.isOne ? 'hasOne' : 'hasMany';
           const hAlias =
             this.options.noAlias && Utils.pluralize(rel.childModel.toLowerCase()) === rel.childProp.toLowerCase()
