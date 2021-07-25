@@ -168,7 +168,8 @@ export class AutoGenerator {
         strBelongsToMany += `    this.belongsToMany(models.${recase(
           this.options.caseProp,
           rel.childModel
-        )}, {\n      as: '${asprop}',\n      through: '${recase(
+        )}, {\n      through: '${recase(
+          //)}, {\n      as: '${asprop}',\n      through: '${recase(
           this.options.caseProp,
           rel.joinModel
         )}',\n      foreignKey: '${rel.parentId}',\n      otherKey: '${rel.childId}',\n    });\n`;
