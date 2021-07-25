@@ -405,7 +405,7 @@ export class AutoGenerator {
       } else if (attr === 'allowNull') {
         str += space[5] + attr + ': ' + fieldObj[attr];
         if (fieldObj[attr] === false) {
-          validationStr += `${this.space[3]}${this.space[3]}${attr}: {\n`;
+          validationStr += `${this.space[3]}${this.space[3]}notNull: {\n`;
           validationStr += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} cannot be empty.',\n`;
           validationStr += `${this.space[3]}${this.space[3]}},\n`;
         }
@@ -669,7 +669,7 @@ export class AutoGenerator {
       return attrValue;
     }
     const type: string = attrValue.toLowerCase();
-    const length = type.match(/\(\d+\)/);
+    const length = type.match(/\d/);
     const precision = type.match(/\(\d+,\d+\)/);
     let val = null;
     let typematch = null;
