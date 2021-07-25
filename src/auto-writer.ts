@@ -238,7 +238,7 @@ export class AutoWriter {
 
   // create the Custom init-models file to load all the models into Sequelize
   private createCustomInitString(tables: string[], assoc: string) {
-    let str = `import Sequelize from 'sequelize';\n`;
+    let str = `import Sequelize from 'sequelize';\n\n`;
     str += `import {\n`;
     str += `  DB,\n`;
     str += `  USER,\n`;
@@ -254,7 +254,7 @@ export class AutoWriter {
       const fileName = recase(this.options.caseFile, t, this.options.singularize);
       const modelName = recase(this.options.caseModel, t, this.options.singularize);
       modelNames.push(modelName);
-      str += `import ${modelName} from './${fileName}.model.js');\n`;
+      str += `import ${modelName} from './${fileName}.model.js';\n`;
     });
 
     str += `\nconst sequelize = new Sequelize(DB, USER, PASSWORD, {\n`;
@@ -263,7 +263,7 @@ export class AutoWriter {
 
     str += `  pool: {\n`;
     str += `    max: _pool.max,\n`;
-    str += `    min: _pool.min\n,`;
+    str += `    min: _pool.min,\n`;
     str += `    acquire: _pool.acquire,\n`;
     str += `    idle: _pool.idle,\n`;
     str += `  },\n`;
@@ -291,22 +291,6 @@ export class AutoWriter {
 
     str += `module.exports = db;\n`;
 
-    // create the initialization function
-    str += '\nexport default function initModels(sequelize) {\n';
-    modelNames.forEach((m) => {
-      str += `  var ${m} = _${m}.init(sequelize, DataTypes);\n`;
-    });
-
-    // add the asociations
-    str += '\n' + assoc;
-
-    // return the models
-    str += '\n  return {\n';
-    modelNames.forEach((m) => {
-      str += `    ${m},\n`;
-    });
-    str += '  };\n';
-    str += '}\n';
     return str;
   }
 }
