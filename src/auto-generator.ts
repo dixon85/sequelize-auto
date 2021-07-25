@@ -178,7 +178,7 @@ export class AutoGenerator {
 
         rels.find((relation) => {
           if (relation.isM2M === true && relation.childModel === rel.childModel) {
-            console.log(`Duplicate relation '${relation.childModel}' and '${rel.childModel}'`);
+            console.log(`A Duplicate relation between '${relation.childModel}' and '${rel.childModel}' found`);
             existsM2M = true;
           }
         });
