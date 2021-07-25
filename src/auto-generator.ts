@@ -405,7 +405,7 @@ export class AutoGenerator {
       } else if (attr === 'allowNull') {
         str += space[5] + attr + ': ' + fieldObj[attr];
         if (fieldObj[attr] === false) {
-          validationStr = `${this.space[3]}${this.space[3]}${attr}: {\n`;
+          validationStr += `${this.space[3]}${this.space[3]}${attr}: {\n`;
           validationStr += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} cannot be empty.',\n`;
           validationStr += `${this.space[3]}${this.space[3]}},\n`;
         }
