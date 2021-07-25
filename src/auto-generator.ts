@@ -347,6 +347,8 @@ export class AutoGenerator {
 
     // column's attributes
     const fieldAttrs = _.keys(fieldObj);
+    let validationStr: string = '';
+
     fieldAttrs.forEach((attr) => {
       // We don't need the special attribute from postgresql; "unique" is handled separately
       if (attr === 'special' || attr === 'elementType' || attr === 'unique') {
@@ -483,6 +485,7 @@ export class AutoGenerator {
           val = _.isString(val) ? quoteWrapper + this.escapeSpecial(val) + quoteWrapper : val;
         }
         str += space[5] + attr + ': ' + val;
+        validationStr += this.getFieldValidation(fieldObj, attr);
       }
 
       str += ',\n';
@@ -500,11 +503,6 @@ export class AutoGenerator {
         str += space[5] + "field: '" + field + "',\n";
       }
     }
-    let validationStr: string = '';
-    // **
-    fieldAttrs.forEach((attr) => {
-      validationStr += this.getFieldValidation(fieldObj, attr);
-    });
 
     if (validationStr.length > 0) {
       str += space[5] + 'validate: {\n';
