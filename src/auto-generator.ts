@@ -404,6 +404,11 @@ export class AutoGenerator {
         return true;
       } else if (attr === 'allowNull') {
         str += space[5] + attr + ': ' + fieldObj[attr];
+        if (fieldObj[attr] === false) {
+          validationStr = `${this.space[3]}${this.space[3]}${attr}: {\n`;
+          validationStr += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} cannot be empty.',\n`;
+          validationStr += `${this.space[3]}${this.space[3]}},\n`;
+        }
       } else if (attr === 'defaultValue') {
         let defaultVal = fieldObj.defaultValue;
         if (this.dialect.name === 'mssql' && defaultVal && defaultVal.toLowerCase() === '(newid())') {
@@ -506,7 +511,7 @@ export class AutoGenerator {
 
     if (validationStr.length > 0) {
       str += space[5] + 'validate: {\n';
-      str += validationStr + '\n';
+      str += validationStr;
       str += space[5] + '},\n';
     }
     // removes the last `,` within the attribute options
@@ -685,13 +690,13 @@ export class AutoGenerator {
       val = '';
     } else if ((typematch = type.match(/^(bigint|smallint|mediumint|tinyint|int)/))) {
       if (/unsigned/i.test(type)) {
-        val = `${this.space[3]}${this.space[3]}isInt: {`;
-        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} must be an integer.',`;
-        val += `${this.space[3]}${this.space[3]}},`;
+        val = `${this.space[3]}${this.space[3]}isInt: {\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} must be an integer.',\n`;
+        val += `${this.space[3]}${this.space[3]}},\n`;
       } else {
-        val = `${this.space[3]}${this.space[3]}isDecimal: {`;
-        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} must be decimal.',`;
-        val += `${this.space[3]}${this.space[3]}},`;
+        val = `${this.space[3]}${this.space[3]}isDecimal: {\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} must be decimal.',\n`;
+        val += `${this.space[3]}${this.space[3]}},\n`;
       }
     } else if (type === 'nvarchar(max)' || type === 'varchar(max)') {
       val = '';
@@ -707,13 +712,13 @@ export class AutoGenerator {
     } else if (type.match(/text$/)) {
       val = '';
     } else if (type === 'date') {
-      val = `${this.space[3]}${this.space[3]}isDate: {`;
-      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} must be a date-only string in the format YYYY-MM-DD.',`;
-      val += `${this.space[3]}${this.space[3]}},`;
+      val = `${this.space[3]}${this.space[3]}isDate: {\n`;
+      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} must be a date-only string in the format YYYY-MM-DD.',\n`;
+      val += `${this.space[3]}${this.space[3]}},\n`;
     } else if (type.match(/^(date|timestamp)/)) {
-      val = `${this.space[3]}${this.space[3]}isDate: {`;
-      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} must be a date in the format YYYY-MM-DD 00:00:00.',`;
-      val += `${this.space[3]}${this.space[3]}},`;
+      val = `${this.space[3]}${this.space[3]}isDate: {\n`;
+      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldObj.defaultValue} must be a date in the format YYYY-MM-DD 00:00:00.',\n`;
+      val += `${this.space[3]}${this.space[3]}},\n`;
     } else if (type.match(/^(time)/)) {
       val = '';
     } else if (type.match(/^(float|float4)/)) {
@@ -733,13 +738,10 @@ export class AutoGenerator {
     } else if (type.match(/^json/)) {
       val = '';
     } else if (type.match(/^geometry/)) {
-      const gtype = fieldObj.elementType ? `(${fieldObj.elementType})` : '';
       val = ``;
     } else if (type.match(/^geography/)) {
-      const gtype = fieldObj.elementType ? `(${fieldObj.elementType})` : '';
       val = ``;
     } else if (type.match(/^array/)) {
-      const eltype = this.getSqType(fieldObj, 'elementType');
       val = ``;
     } else if (type.match(/(binary|image|blob)/)) {
       val = '';
