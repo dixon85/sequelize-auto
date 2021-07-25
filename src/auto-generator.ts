@@ -669,7 +669,7 @@ export class AutoGenerator {
       return attrValue;
     }
     const type: string = attrValue.toLowerCase();
-    const length = type.match(/\d/);
+    const length = type.match(/\d+/);
     const precision = type.match(/\(\d+,\d+\)/);
     let val = null;
     let typematch = null;
