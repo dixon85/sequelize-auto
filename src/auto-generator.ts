@@ -702,9 +702,21 @@ export class AutoGenerator {
       val = '';
     } else if (type.match(/n?varchar|string|varying/)) {
       val = `${this.space[3]}${this.space[3]}len: {\n`;
-      val += `${this.space[3]}${this.space[3]}${this.space[1]}args: [1, ${length}],\n`;
-      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName}  must be no more than ${length} characters in length.',\n`;
-      val += `${this.space[3]}${this.space[3]}},\n`;
+
+      const isISO = fieldName.startsWith('iso');
+
+      if (isISO === true) {
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}args: [${length}, ${length}],\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must be exactly ${length} characters.',\n`;
+        val += `${this.space[3]}${this.space[3]}},\n`;
+        val += `${this.space[3]}${this.space[3]}isAlpha: {\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must contain letters only.',\n`;
+        val += `${this.space[3]}${this.space[3]}},\n`;
+      } else {
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}args: [1, ${length}],\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must be no more than ${length} characters in length.',\n`;
+        val += `${this.space[3]}${this.space[3]}},\n`;
+      }
     } else if (type.match(/^n?char/)) {
       val = '';
     } else if (type.match(/^real/)) {
