@@ -278,7 +278,7 @@ export class AutoWriter {
       str += `  ${fileName}: ${modelName}.init(sequelize, Sequelize),\n`;
     });
 
-    str += `}\n\n`;
+    str += `};\n\n`;
 
     str += `Object.values(models)\n`;
     str += `  .filter((model) => typeof model.associate === 'function')\n`;
