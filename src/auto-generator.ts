@@ -406,7 +406,7 @@ export class AutoGenerator {
         str += space[5] + attr + ': ' + fieldObj[attr];
         if (fieldObj[attr] === false) {
           validationStr += `${this.space[3]}${this.space[3]}notNull: {\n`;
-          validationStr += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} cannot be empty.',\n`;
+          validationStr += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '""${fieldName}"" cannot be empty.',\n`;
           validationStr += `${this.space[3]}${this.space[3]}},\n`;
         }
       } else if (attr === 'defaultValue') {
@@ -691,11 +691,11 @@ export class AutoGenerator {
     } else if ((typematch = type.match(/^(bigint|smallint|mediumint|tinyint|int)/))) {
       if (/unsigned/i.test(type)) {
         val = `${this.space[3]}${this.space[3]}isInt: {\n`;
-        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must be an integer.',\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '""${fieldName}"" must be an integer.',\n`;
         val += `${this.space[3]}${this.space[3]}},\n`;
       } else {
         val = `${this.space[3]}${this.space[3]}isDecimal: {\n`;
-        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must be decimal.',\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '""${fieldName}"" must be decimal.',\n`;
         val += `${this.space[3]}${this.space[3]}},\n`;
       }
     } else if (type === 'nvarchar(max)' || type === 'varchar(max)') {
@@ -707,14 +707,14 @@ export class AutoGenerator {
 
       if (isISO === true) {
         val += `${this.space[3]}${this.space[3]}${this.space[1]}args: [${length}, ${length}],\n`;
-        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must be exactly ${length} characters.',\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '"${fieldName}" must be exactly ${length} characters.',\n`;
         val += `${this.space[3]}${this.space[3]}},\n`;
         val += `${this.space[3]}${this.space[3]}isAlpha: {\n`;
-        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must contain letters only.',\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '"${fieldName}" must contain letters only.',\n`;
         val += `${this.space[3]}${this.space[3]}},\n`;
       } else {
         val += `${this.space[3]}${this.space[3]}${this.space[1]}args: [1, ${length}],\n`;
-        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must be no more than ${length} characters in length.',\n`;
+        val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '"${fieldName}" must be no more than ${length} characters in length.',\n`;
         val += `${this.space[3]}${this.space[3]}},\n`;
       }
     } else if (type.match(/^n?char/)) {
@@ -725,11 +725,11 @@ export class AutoGenerator {
       val = '';
     } else if (type === 'date') {
       val = `${this.space[3]}${this.space[3]}isDate: {\n`;
-      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must be a date-only string in the format YYYY-MM-DD.',\n`;
+      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '"${fieldName}" must be a date-only string in the format YYYY-MM-DD.',\n`;
       val += `${this.space[3]}${this.space[3]}},\n`;
     } else if (type.match(/^(date|timestamp)/)) {
       val = `${this.space[3]}${this.space[3]}isDate: {\n`;
-      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '${fieldName} must be a date in the format YYYY-MM-DD 00:00:00.',\n`;
+      val += `${this.space[3]}${this.space[3]}${this.space[1]}msg: '""${fieldName}"" must be a date in the format YYYY-MM-DD 00:00:00.',\n`;
       val += `${this.space[3]}${this.space[3]}},\n`;
     } else if (type.match(/^(time)/)) {
       val = '';

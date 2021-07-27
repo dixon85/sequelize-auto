@@ -1,3 +1,5 @@
+Highly Experimental - Added 'custom' LangOption, with custom model output that includes a `static associate` method in model file instead of associations in init-models. Also renamed init-models.js to index.js with loop to call each model's associate method.
+
 # Sequelize-Auto
 
 <!-- [![Greenkeeper badge](https://badges.greenkeeper.io/sequelize/sequelize-auto.svg)](https://greenkeeper.io/) -->
@@ -16,17 +18,17 @@ You will need to install `sequelize`; it's no longer installed by `sequelize-aut
 
 You will need to install the correct dialect binding before using sequelize-auto.
 
-Dialect | Install
----|---
-MySQL/MariaDB | `npm install sequelize mysql2`
-Postgres | `npm install sequelize pg pg-hstore`
-Sqlite | `npm install sequelize sqlite3`
-MSSQL | `npm install sequelize tedious`
-
+| Dialect       | Install                              |
+| ------------- | ------------------------------------ |
+| MySQL/MariaDB | `npm install sequelize mysql2`       |
+| Postgres      | `npm install sequelize pg pg-hstore` |
+| Sqlite        | `npm install sequelize sqlite3`      |
+| MSSQL         | `npm install sequelize tedious`      |
 
 ## Usage
 
     sequelize-auto -h <host> -d <database> -u <user> -x [password] -p [port]  --dialect [dialect] -c [/path/to/config] -o [/path/to/models] -t [tableName]
+
 ```
 Options:
     --help               Show help                                   [boolean]
@@ -61,7 +63,7 @@ Options:
                           u = UPPER_CASE
     --caseFile, --cf     Set case of file names: c|l|o|p|u
     --caseProp, --cp     Set case of property names: c|l|o|p|u
---noAlias                Avoid creating alias `as` property in relations        
+--noAlias                Avoid creating alias `as` property in relations
                                                                      [boolean]
 --noInitModels           Prevent writing the init-models file        [boolean]
 -n, --noWrite            Prevent writing the models to disk          [boolean]
@@ -85,43 +87,47 @@ Options:
 Produces a file/files such as `./models/User.js` which looks like:
 
 ```js
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('User', {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+module.exports = function (sequelize, DataTypes) {
+  return sequelize.define(
+    'User',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      username: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+      },
+      aNumber: {
+        type: DataTypes.SMALLINT,
+        allowNull: true,
+      },
+      dateAllowNullTrue: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      defaultValueBoolean: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: true,
+      },
     },
-    username: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    aNumber: {
-      type: DataTypes.SMALLINT,
-      allowNull: true
-    },
-    dateAllowNullTrue: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    defaultValueBoolean: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-      defaultValue: true
+    {
+      tableName: 'User',
     }
-  }, {
-    tableName: 'User',
-  });
+  );
 };
 ```
 
 Sequelize-auto also generates an initialization file, `./models/init-models.js`, which contains the code to load each model definition into Sequelize:
 
 ```js
-var DataTypes = require("sequelize").DataTypes;
-var _User = require("./User");
-var _Product = require("./Product");
+var DataTypes = require('sequelize').DataTypes;
+var _User = require('./User');
+var _Product = require('./Product');
 
 function initModels(sequelize) {
   var User = _User(sequelize, DataTypes);
@@ -153,11 +159,11 @@ var User = require('path/to/user')(sequelize, DataTypes);
 
 ## ES6
 
-You can use the `-l es6` option to create the model definition files as ES6 classes, or `-l esm` option to create ES6 modules.  Then you would `require` or `import` the classes and call the `init(sequelize, DataTypes)` method on each class.
+You can use the `-l es6` option to create the model definition files as ES6 classes, or `-l esm` option to create ES6 modules. Then you would `require` or `import` the classes and call the `init(sequelize, DataTypes)` method on each class.
 
 ## TypeScript
 
-Add `-l ts` to cli options or `lang: 'ts'` to programmatic options.  This will generate a TypeScript class in each model file, and an `init-model.ts` file
+Add `-l ts` to cli options or `lang: 'ts'` to programmatic options. This will generate a TypeScript class in each model file, and an `init-model.ts` file
 to import and initialize all the classes.
 
 > Note that you need TypeScript **4.x** to compile the generated files.
@@ -263,19 +269,29 @@ export class Order extends Model<OrderAttributes, OrderCreationAttributes> imple
 Example `init-models.ts`:
 
 ```js
-import { Sequelize } from "sequelize";
-import { Customer, CustomerAttributes, CustomerCreationAttributes } from "./customer";
-import { Order, OrderAttributes, OrderCreationAttributes } from "./order";
-import { OrderItem, OrderItemAttributes, OrderItemCreationAttributes } from "./order_item";
-import { Product, ProductAttributes, ProductCreationAttributes } from "./product";
-import { Supplier, SupplierAttributes, SupplierCreationAttributes } from "./supplier";
+import { Sequelize } from 'sequelize';
+import { Customer, CustomerAttributes, CustomerCreationAttributes } from './customer';
+import { Order, OrderAttributes, OrderCreationAttributes } from './order';
+import { OrderItem, OrderItemAttributes, OrderItemCreationAttributes } from './order_item';
+import { Product, ProductAttributes, ProductCreationAttributes } from './product';
+import { Supplier, SupplierAttributes, SupplierCreationAttributes } from './supplier';
 
 export {
-  Customer, CustomerAttributes, CustomerCreationAttributes,
-  Order, OrderAttributes, OrderCreationAttributes,
-  OrderItem, OrderItemAttributes, OrderItemCreationAttributes,
-  Product, ProductAttributes, ProductCreationAttributes,
-  Supplier, SupplierAttributes, SupplierCreationAttributes,
+  Customer,
+  CustomerAttributes,
+  CustomerCreationAttributes,
+  Order,
+  OrderAttributes,
+  OrderCreationAttributes,
+  OrderItem,
+  OrderItemAttributes,
+  OrderItemCreationAttributes,
+  Product,
+  ProductAttributes,
+  ProductCreationAttributes,
+  Supplier,
+  SupplierAttributes,
+  SupplierCreationAttributes,
 };
 
 export function initModels(sequelize: Sequelize) {
@@ -285,14 +301,14 @@ export function initModels(sequelize: Sequelize) {
   Product.initModel(sequelize);
   Supplier.initModel(sequelize);
 
-  Order.belongsTo(Customer, { as: "customer", foreignKey: "customerId"});
-  Customer.hasMany(Order, { as: "orders", foreignKey: "customerId"});
-  OrderItem.belongsTo(Order, { as: "order", foreignKey: "orderId"});
-  Order.hasMany(OrderItem, { as: "orderItems", foreignKey: "orderId"});
-  OrderItem.belongsTo(Product, { as: "product", foreignKey: "productId"});
-  Product.hasMany(OrderItem, { as: "orderItems", foreignKey: "productId"});
-  Product.belongsTo(Supplier, { as: "supplier", foreignKey: "supplierId"});
-  Supplier.hasMany(Product, { as: "products", foreignKey: "supplierId"});
+  Order.belongsTo(Customer, { as: 'customer', foreignKey: 'customerId' });
+  Customer.hasMany(Order, { as: 'orders', foreignKey: 'customerId' });
+  OrderItem.belongsTo(Order, { as: 'order', foreignKey: 'orderId' });
+  Order.hasMany(OrderItem, { as: 'orderItems', foreignKey: 'orderId' });
+  OrderItem.belongsTo(Product, { as: 'product', foreignKey: 'productId' });
+  Product.hasMany(OrderItem, { as: 'orderItems', foreignKey: 'productId' });
+  Product.belongsTo(Supplier, { as: 'supplier', foreignKey: 'supplierId' });
+  Supplier.hasMany(Product, { as: 'products', foreignKey: 'supplierId' });
 
   return {
     Customer: Customer,
@@ -310,22 +326,21 @@ Model usage in a TypeScript program:
 // Order is the sequelize Model class
 // OrderAttributes is the interface defining the fields
 // OrderCreationAttributes is the interface defining the fields when creating a new record
-import { initModels, Order, OrderCreationAttributes } from "./models/init-models";
+import { initModels, Order, OrderCreationAttributes } from './models/init-models';
 
 // import models into sequelize instance
 initModels(this.sequelize);
 
-const myOrders = await Order.findAll({ where: { "customerId": cust.id }, include: ['customer'] });
+const myOrders = await Order.findAll({ where: { customerId: cust.id }, include: ['customer'] });
 
 const attr: OrderCreationAttributes = {
   customerId: cust.id,
   orderDate: new Date(),
-  orderNumber: "ORD123",
-  totalAmount: 223.45
+  orderNumber: 'ORD123',
+  totalAmount: 223.45,
 };
 const newOrder = await Order.create(attr);
 ```
-
 
 ## Configuration options
 
@@ -337,13 +352,13 @@ For the `-c, --config` option, various JSON/configuration parameters are defined
 const SequelizeAuto = require('sequelize-auto');
 const auto = new SequelizeAuto('database', 'user', 'pass');
 
-auto.run().then(data => {
-  console.log(data.tables);      // table and field list
+auto.run().then((data) => {
+  console.log(data.tables); // table and field list
   console.log(data.foreignKeys); // table foreign key list
-  console.log(data.indexes);     // table indexes
+  console.log(data.indexes); // table indexes
   console.log(data.hasTriggerTables); // tables that have triggers
-  console.log(data.relations);   // relationships between models
-  console.log(data.text)         // text of generated models
+  console.log(data.relations); // relationships between models
+  console.log(data.text); // text of generated models
 });
 ```
 
@@ -351,24 +366,25 @@ With options:
 
 ```js
 const auto = new SequelizeAuto('database', 'user', 'pass', {
-    host: 'localhost',
-    dialect: 'mysql'|'mariadb'|'sqlite'|'postgres'|'mssql',
-    directory: './models', // where to write files
-    port: 'port',
-    caseModel: 'c', // convert snake_case column names to camelCase field names: user_id -> userId
-    caseFile: 'c', // file names created for each model use camelCase.js not snake_case.js
-    singularize: true, // convert plural table names to singular model names
-    additional: {
-        timestamps: false
-        // ...options added to each model
-    },
-    tables: ['table1', 'table2', 'myschema.table3'] // use all tables, if omitted
-    //...
-})
+  host: 'localhost',
+  dialect: 'mysql' | 'mariadb' | 'sqlite' | 'postgres' | 'mssql',
+  directory: './models', // where to write files
+  port: 'port',
+  caseModel: 'c', // convert snake_case column names to camelCase field names: user_id -> userId
+  caseFile: 'c', // file names created for each model use camelCase.js not snake_case.js
+  singularize: true, // convert plural table names to singular model names
+  additional: {
+    timestamps: false,
+    // ...options added to each model
+  },
+  tables: ['table1', 'table2', 'myschema.table3'], // use all tables, if omitted
+  //...
+});
 ```
 
 Or you can create the `sequelize` instance first, using a [connection string](https://sequelize.org/master/manual/getting-started.html#connecting-to-a-database),
 and then pass it to SequelizeAuto:
+
 ```js
 const SequelizeAuto = require('sequelize-auto');
 const Sequelize = require('sequelize');
@@ -383,17 +399,17 @@ auto.run();
 
 ## Resources
 
- - [Changelog](https://github.com/sequelize/sequelize-auto/blob/master/CHANGELOG.md)
+- [Changelog](https://github.com/sequelize/sequelize-auto/blob/master/CHANGELOG.md)
 
 ## Testing
 
 To set up:
 
 1. Create an empty database called `sequelize_auto_test` on your database server (sqlite excepted)
-2. Create a `.env` file from `sample.env` and set your username/password/port etc.  The env is read by `test/config.js`
+2. Create a `.env` file from `sample.env` and set your username/password/port etc. The env is read by `test/config.js`
 3. Build the TypeScript from the `src` directory into the `lib` directory:
 
-    `npm run build`
+   `npm run build`
 
 Then run one of the test commands below:
 
